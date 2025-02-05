@@ -1,6 +1,5 @@
-require('dotenv').config();  // Import dotenvconst compression = require('compression');
-
-
+require('dotenv').config();  // Import dotenv
+const compression = require('compression');
 const express = require('express');
 const mysql = require('mysql2');
 const bodyParser = require('body-parser');
@@ -13,17 +12,22 @@ const port = process.env.PORT || 5000;  // Use PORT from .env, or default to 500
 // Middleware to parse JSON requests
 app.use(bodyParser.json());
 app.use(cors());
+app.use(compression());  // Enable compression for responses
 
 // Create a MySQL connection using environment variables
 const db = mysql.createConnection({
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME,
+    port: process.env.DB_PORT,
 });
 
 db.connect((err) => {
-  if (err) throw err;
+  if (err) {
+    console.error('Database connection failed:', err);
+    throw err;
+  }
   console.log('Connected to the MySQL database');
 });
 
